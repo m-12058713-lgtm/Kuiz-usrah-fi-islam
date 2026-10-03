@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختبار الأسرة في الإسلام</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#0f5132,#198754,#d4edda);min-height:100vh;color:#173b2b}
+.container{max-width:850px;margin:auto;padding:22px}.card{background:#fff;border-radius:24px;padding:28px;box-shadow:0 12px 35px #0003}
+h1{margin:0 0 8px;text-align:center;color:#146c43;font-size:32px}.subtitle{text-align:center;color:#587064;margin-bottom:24px}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#eef8f1;padding:12px 16px;border-radius:14px;margin-bottom:20px;font-weight:bold}
+.progress{height:10px;background:#e8eee9;border-radius:20px;overflow:hidden;margin-bottom:22px}.bar{height:100%;width:0;background:#198754;transition:.3s}
+.qnum{color:#198754;font-weight:bold;margin-bottom:10px}.question{font-size:24px;line-height:1.7;margin:0 0 20px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px}.answer{border:2px solid #dce9e0;background:#fff;padding:16px;border-radius:15px;font-size:18px;text-align:right;cursor:pointer;transition:.2s}.answer:hover{transform:translateY(-2px);border-color:#198754;background:#f4fbf6}.answer.correct{background:#d1e7dd;border-color:#198754}.answer.wrong{background:#f8d7da;border-color:#dc3545}.answer:disabled{cursor:default}
+.feedback{min-height:30px;text-align:center;font-weight:bold;font-size:18px;margin:16px 0}
+button.next{display:block;margin:auto;border:0;border-radius:14px;background:#198754;color:#fff;padding:13px 30px;font-size:18px;cursor:pointer;display:none}
+.result{text-align:center}.score{font-size:54px;color:#146c43;font-weight:bold}.restart{border:0;background:#146c43;color:#fff;padding:14px 28px;border-radius:14px;font-size:18px;cursor:pointer}
+@media(max-width:650px){.answers{grid-template-columns:1fr}.question{font-size:20px}.card{padding:20px}}
+</style></head>
+<body>
+<div class="container"><div class="card">
+<h1>🌙 اختبار الأسرة في الإسلام</h1>
+<div class="subtitle">مسابقة تفاعلية — ٢٠ سؤالاً</div>
+<div id="game">
+<div class="top"><span id="counter">السؤال ١ من ٢٠</span><span>النتيجة: <b id="score">٠</b></span></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="qnum" id="qnum"></div><p class="question" id="question"></p>
+<div class="answers" id="answers"></div><div class="feedback" id="feedback"></div>
+<button class="next" id="next" onclick="nextQuestion()">السؤال التالي ←</button>
+</div>
+<div id="result" class="result" style="display:none">
+<h2>🎉 انتهى الاختبار!</h2><div class="score" id="finalScore"></div><p id="message"></p>
+<button class="restart" onclick="restart()">إعادة الاختبار</button>
+</div>
+</div></div>
+<script>
+const questions = [["ما معنى الأسرة من الناحية اللغوية؟", ["الزوج والزوجة", "عشيرة الرجل وأهل بيته", "الأولاد فقط", "الأقارب فقط"], 1], ["ما معنى الأسرة من الناحية الشرعية؟", ["مجموعة ترتبط بالزواج الشرعي والتزمت بالحقوق والواجبات", "مجموعة الأصدقاء", "مجموعة الجيران", "مجموعة الأقارب فقط"], 0], ["ما أهمية الأسرة في الإسلام؟", ["دعامة أساسية في المجتمع", "سبب الفساد", "سبب النزاع", "سبب الفقر"], 0], ["ماذا يحدث إذا صلحت الأسرة؟", ["ضعف المجتمع", "فساد المجتمع", "صلح المجتمع", "هدم المجتمع"], 2], ["لماذا حث الإسلام على الزواج؟", ["لحفظ النوع البشري", "لزيادة المال", "للحصول على الجمال", "للحصول على النسب"], 0], ["من الحقوق التي شرعها الإسلام لأفراد الأسرة:", ["حقوق التوارث والمالية والرعاية والتربية", "حقوق السفر فقط", "حقوق العمل فقط", "حقوق التجارة فقط"], 0], ["ما الحكمة من الزواج بين الزوجين؟", ["الفساد والهدم", "السكينة والمودة والرحمة", "النزاع والخصام", "الغضب والكراهية"], 1], ["ماذا تعني المودة والرحمة بين الزوجين؟", ["المحبة والرحمة", "الغنى والجمال", "النسب والمال", "العلم والعمل"], 0], ["ما الأساس المهم في اختيار الزوج أو الزوجة؟", ["المال", "الجمال", "الدين والخلق", "الشهرة"], 2], ["ما الأمور الأربعة المذكورة في الحديث عند اختيار المرأة؟", ["الدين والمال والعلم والعمل", "المال والحسب والجمال والدين", "النسب والعلم والعمل والجمال", "المال والعلم والنسب والشهرة"], 1], ["ما الذي ينبغي تقديمه عند اختيار الزوجة؟", ["المال", "الجمال", "الدين", "الشهرة"], 2], ["ما المقصود بالنسب؟", ["طيب الأصل وكرم المنبت", "كثرة المال", "حسن العمل", "كثرة العلم"], 0], ["ما المقصود بالكفاءة؟", ["مساواة حال الرجل لحال المرأة في الأمور المعتبرة في الزواج", "غنى الرجل", "جمال المرأة", "تعليم الزوجين"], 0], ["أيّ مما يأتي من صفات الكفاءة؟", ["الدين", "المال فقط", "الجمال فقط", "الشهرة"], 0], ["ما المقصود بالبكر؟", ["المرأة التي سبق لها الزواج", "المرأة التي لم يسبق لها الزواج", "المرأة التي لها أبناء", "المرأة المطلقة"], 1], ["لماذا حث الإسلام الرجل على اختيار البكر؟", ["لقوة الصلة ودوام المحبة", "لكثرة المال", "لحسن النسب فقط", "لزيادة العمل"], 0], ["ماذا قال الرسول ﷺ للشاب القادر على الزواج؟", ["فليصم", "فليتزوج", "فليسافر", "فليعمل"], 1], ["ماذا يفعل من لم يستطع الزواج؟", ["فعليه بالصوم", "فعليه بالسفر", "فعليه بالعمل", "فعليه بالنوم"], 0], ["ما فائدتا الصيام المذكورتان في الحديث؟", ["أغض للبصر وأحصن للفرج", "زيادة المال وحسن النسب", "قوة الجسم وزيادة العلم", "حسن الخلق وكثرة المال"], 0], ["ماذا يجب على الأسرة أن تحافظ عليه؟", ["حماية أفراد الأسرة من الزنا والفساد وسوء الأخلاق", "المال فقط", "الجمال فقط", "النسب فقط"], 0]];
+let i=0,score=0,answered=false;
+const arabic=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+function load(){
+ answered=false; const q=questions[i];
+ document.getElementById("counter").textContent=`السؤال ${arabic(i+1)} من ${arabic(questions.length)}`;
+ document.getElementById("score").textContent=arabic(score);
+ document.getElementById("bar").style.width=((i)/questions.length*100)+"%";
+ document.getElementById("qnum").textContent=`السؤال ${arabic(i+1)}`;
+ document.getElementById("question").textContent=q[0];
+ const a=document.getElementById("answers");a.innerHTML="";
+ q[1].forEach((x,j)=>{let b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+j)+". "+x;b.onclick=()=>choose(j,b);a.appendChild(b)});
+ document.getElementById("feedback").textContent="";
+ document.getElementById("next").style.display="none";
+}
+function choose(j,btn){
+ if(answered)return; answered=true; const q=questions[i];
+ document.querySelectorAll(".answer").forEach((b,k)=>{b.disabled=true;if(k===q[2])b.classList.add("correct")});
+ if(j===q[2]){score++;btn.classList.add("correct");document.getElementById("feedback").textContent="✓ إجابة صحيحة!";document.getElementById("feedback").style.color="#198754"}
+ else{btn.classList.add("wrong");document.getElementById("feedback").textContent="✗ إجابة غير صحيحة — الإجابة الصحيحة مميزة بالأخضر.";document.getElementById("feedback").style.color="#dc3545"}
+ document.getElementById("score").textContent=arabic(score);document.getElementById("next").style.display="block";
+}
+function nextQuestion(){i++;if(i<questions.length)load();else finish()}
+function finish(){
+ document.getElementById("game").style.display="none";document.getElementById("result").style.display="block";
+ document.getElementById("finalScore").textContent=`${arabic(score)} / ${arabic(questions.length)}`;
+ document.getElementById("message").textContent=score===20?"ما شاء الله! أحسنت، إجابة كاملة.":score>=15?"أحسنت! نتيجة ممتازة، راجع بعض النقاط مرة أخرى.":"حاول مرة أخرى وراجع الدرس جيداً.";
+}
+function restart(){i=0;score=0;document.getElementById("game").style.display="block";document.getElementById("result").style.display="none";load()}
+load();
+</script></body></html>
